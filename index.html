@@ -1,8 +1,102 @@
-<html>
-    <head>
-        <title>The Cumino Vim Bundle for Haskell</title>
-    </head>
-    <body>
-        This is Cumino: the Vim's way to prepare Haskell recipies.
-    </body>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>The Cumino Vim Bundle for Haskell</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <script src="js/bootstrap.min.js"></script>
+    <div class="container">
+      <div class="span-8">
+        <div align="center">
+          <img width="300" src="img/cumino.png"/>
+        </div>
+        <h1>...the Vim's way to prepare Haskell recipies.</h1>
+        <div align="center">
+          <button class="btn btn-large btn-success">Learn how to use it</button>
+          <button class="btn btn-large btn-success">Download</button>
+        </div>
+      </div>
+    </div>
+    <hr/>
+    <div class="container-fluid">
+
+      <!-- Logo -->
+      <div class="row-fluid">
+        <div class="span2">
+          <b>What is this page and why that logo seems a big ball of worms?</b>
+        </div>
+        <div class="span10">
+          <p>They are seeds, not worms. Cumino means Cumin in italian. 
+          Quoting from Wikipedia: <em>"Cumin can be an ingredient in chili powder
+          , and is found in achiote blends, adobos, sofrito, garam masala,
+          <b>curry</b>, and bahaarat."</em>. Do you understand now?</p>
+          <br>
+          <div align="center">
+            <b> Cumino : Vim = Curry : Haskell</b>
+          </div>
+          <br>
+        </div>
+      </div>
+      <hr/>
+      <!-- WHAT is? -->
+      <div class="row-fluid">
+        <div class="span2">
+          <b>Ok but, technically speaking, what is Cumino?</b>
+        </div>
+        <div class="span10">
+          <p>Cumino is a Vim bundle which connects Vim and Ghci together,
+             through Tmux. Simply open Vim, press one command and start
+             playing with your Haskell code immediately. You can load your
+             buffer inside Ghci in a breeze, as well as loading single code
+             portion. Do you want to rapidly test that snippet without
+             reloading the entire file? You can do it! Cumino will perform
+             the dark magic under the hood. You can send to Ghci any kind
+             of snippet: imports, record and types definitions, instance
+             declarations and even function with their signatures. Cumino
+             will properly handle all this cases for you, so you can spend
+             time doing the only thing worth doing in life, coding :P</p>
+        </div>
+      </div>
+
+      <div class="row-fluid">
+        <div class="span2">
+          <b>How does it look like?</b>
+        </div>
+        <div class="span10">
+          <p>This is a simple Haskell file and a Cumino session running:</p>
+          <img src="cumino_session.png" width=300/>
+        </div>
+      </div>
+
+      <hr/>
+      <div class="row-fluid">
+        <div class="span2">
+          <b>Why not using a Vim plugin like Conque or Vimshell?</b>
+        </div>
+        <div class="span10">
+          <p>Personally, I find plugins that tries to emulate shell layer
+          clumsy or incomplete. If you agree with me, Cumino can be handy.</p>
+        </div>
+      </div>
+
+      <hr/>
+      <div class="row-fluid">
+        <div class="span2">
+          <b>How Cumino integrates with existing Haskell plugins?</b>
+        </div>
+        <div class="span10">
+          <p>Like any Unix tools, it does not. Cumino is unobtrusive,
+          and that means you can use any Haskell plugin you want: ghc-mod,
+          vim-haskellfold, anything. Cumino simply adds the possibility to
+          open a new Tmux session and send buffer content to it. Nothing less,
+         nothing more. </p>
+        </div>
+      </div>
+
+      <hr/>
+
+      <!--end>
+    </div>
+  </body>
 </html>
