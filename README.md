@@ -1,9 +1,10 @@
 Cumino
 ======
 
-# Prerequisites:
+# Prerequisites
 
 * Vim with Python support enabled
+* Tmux >= 1.5
 
 Cumino is the vim way to prepare Haskell recipies:
 
