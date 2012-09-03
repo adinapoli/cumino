@@ -113,8 +113,7 @@ fun! CuminoConnect()
   "Setup the Vim who own the cumino session. Only him
   "can shutdown cumino
   let g:cumino_owner = getpid()
-  let w:sessions = system("tmux list-session | grep cumino")
-  if (w:sessions != "")
+  if CuminoSessionExists()
     "Attach to an already running session
     echo "Connecting to an already running cumino session..."
     call system(g:cumino_default_terminal ." -e tmux attach-session -t cumino &")
@@ -124,17 +123,16 @@ fun! CuminoConnect()
     let g:cumino_owner = getpid()
     echo "Starting a new cumino session..."
     let a:cmd = g:cumino_default_terminal
-    let a:cmd .= " -e tmux new-session -s cumino -n ghci "
-    let a:cmd .= "'ghci' &"
+    let a:cmd .= " -e tmux new-session -s cumino "
+    let a:cmd .= "\"ghci\" &"
     call system(a:cmd)
-    echo "Connected."
   endif
 endfun
 
 fun! CuminoSessionExists()
-  let w:sessions = system("tmux list-session | grep cumino")
+  let w:sessions = system("tmux list-sessions 2>&1 | grep cumino")
   if (w:sessions != "")
-    return 1
+      return 1
   else
     return 0
   endif
