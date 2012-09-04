@@ -116,15 +116,15 @@ fun! CuminoConnect()
   if CuminoSessionExists()
     "Attach to an already running session
     echo "Connecting to an already running cumino session..."
-    call system(g:cumino_default_terminal ." -e tmux attach-session -t cumino &")
+    call system(g:cumino_default_terminal ." -e \"tmux attach-session -t cumino\" &")
     echo "Connected."
   else
     "Change the cumino owner to be this one
     let g:cumino_owner = getpid()
     echo "Starting a new cumino session..."
     let a:cmd = g:cumino_default_terminal
-    let a:cmd .= " -e tmux new-session -s cumino "
-    let a:cmd .= "\"ghci\" &"
+    let a:cmd .= " -e \"tmux new-session -s cumino "
+    let a:cmd .= "'ghci'\" &"
     call system(a:cmd)
   endif
 endfun
