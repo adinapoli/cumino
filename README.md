@@ -5,6 +5,9 @@ Cumino
 
 * Vim with Python support enabled
 * Tmux >= 1.5
+* A terminal emulator
+  * Cumino was tested against gnome-terminal, xterm and mlterm.
+  * urxvt is not supported for now.
 
 Cumino is the vim way to prepare Haskell recipies:
 
