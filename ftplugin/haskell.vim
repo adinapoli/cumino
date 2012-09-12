@@ -33,7 +33,7 @@ if !exists("g:cumino_default_terminal")
 endif
 
 if !exists("g:cumino_buffer_location")
-  let g:cumino_buffer_location = substitute(system("echo $PWD"), "\n", "", "g") . "/.cumino.buff"
+  let g:cumino_buffer_location = substitute(system("echo $HOME"), "\n", "", "g") . "/.cumino.buff"
 endif
 
 python << EOF
@@ -90,14 +90,12 @@ def wrap_if_multiline(lines):
   # Decide whether wrapping the line with :{ :} or not.
   # Some multilines, for example imports, don't require multiline
   # wrapping
-
   if len(lines) > 1 and not line_starts_with(lines[0], "import"):
     return [":{"] + lines + [":}"]
   return lines
 
 def cumino_eval_visual():
   cumino_buff = vim.eval("g:cumino_buffer_location") 
-  #First write the content of the visual selection in a buffer
   write_to_buffer()
   subprocess.call(["tmux", "load-buffer", cumino_buff ])
   subprocess.call(["tmux", "pasteb", "-t", "cumino"])
@@ -110,9 +108,8 @@ EOF
 "Connect to repl
 fun! CuminoConnect()
 
-  "Setup the Vim who own the cumino session. Only him
+  "Setup the Vim who owns the cumino session. Only him
   "can shutdown cumino
-  let g:cumino_owner = getpid()
   if CuminoSessionExists()
     "Attach to an already running session
     echo "Connecting to an already running cumino session..."
