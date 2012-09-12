@@ -10,6 +10,7 @@ Cumino is the vim way to prepare Haskell recipies:
 
 * Vim with Python support enabled
 * Tmux >= 1.5
+* (Optional) [stylish-haskell](https://github.com/jaspervdj/stylish-haskell.git)
 * A terminal emulator
   * Cumino was tested against *gnome-terminal*, *xterm* and *mlterm*.
   * *urxvt* is not supported for now.
