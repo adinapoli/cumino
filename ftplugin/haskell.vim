@@ -73,7 +73,7 @@ def append_let_if_function(lines):
 
   not_prefixable_keywords = [
     "import", "data", "instance",
-    "class", "type"
+    "class", "type", "{-#"
   ]
 
   is_prefixable = lines[0].split(" ")[0] not in not_prefixable_keywords
