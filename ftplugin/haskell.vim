@@ -108,21 +108,34 @@ EOF
 "Connect to repl
 fun! CuminoConnect()
 
-  "Setup the Vim who owns the cumino session. Only him
-  "can shutdown cumino
   if CuminoSessionExists()
     "Attach to an already running session
     echo "Connecting to an already running cumino session..."
-    call system(g:cumino_default_terminal ." -e \"tmux attach-session -t cumino\" &")
+
+    if (g:cumino_default_terminal == "urxvt")
+      call system(g:cumino_default_terminal ." -e -sh -c \"tmux attach-session -t cumino\" &")
+    else
+      call system(g:cumino_default_terminal ." -e \"tmux attach-session -t cumino\" &")
+    endif
+
     echo "Connected."
+
   else
+
     "Change the cumino owner to be this one
     let g:cumino_owner = getpid()
     echo "Starting a new cumino session..."
     let a:cmd = g:cumino_default_terminal
-    let a:cmd .= " -e \"tmux new-session -s cumino "
+
+    if (g:cumino_default_terminal == "urxvt")
+      let a:cmd .= " -e sh -c \"tmux new-session -s cumino "
+    else
+      let a:cmd .= " -e \"tmux new-session -s cumino "
+    endif
+
     let a:cmd .= "'ghci'\" &"
     call system(a:cmd)
+
   endif
 endfun
 

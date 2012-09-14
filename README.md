@@ -13,7 +13,8 @@ Cumino is the vim way to prepare Haskell recipies:
 * (Optional) [stylish-haskell](https://github.com/jaspervdj/stylish-haskell.git)
 * A terminal emulator
   * Cumino was tested against *gnome-terminal*, *xterm* and *mlterm*.
-  * *urxvt* is not supported for now.
+  * *urxvt* is partially supported; it works correctly if you start GVim
+  * or Vim outside a running Tmux session.
 
 
 # Installation
