@@ -108,6 +108,9 @@ EOF
 "Connect to repl
 fun! CuminoConnect()
 
+  " Allow nested tmux sessions.
+  call system("unset $TMUX")
+
   if CuminoSessionExists()
     "Attach to an already running session
     echo "Connecting to an already running cumino session..."
