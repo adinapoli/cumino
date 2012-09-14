@@ -128,18 +128,29 @@ fun! CuminoConnect()
     "Change the cumino owner to be this one
     let g:cumino_owner = getpid()
     echo "Starting a new cumino session..."
-    let a:cmd = g:cumino_default_terminal
+    let cmd = g:cumino_default_terminal
 
     if (g:cumino_default_terminal == "urxvt")
-      let a:cmd .= " -e sh -c \"tmux new-session -s cumino "
+      let cmd .= " -e sh -c \"tmux new-session -s cumino "
     else
-      let a:cmd .= " -e \"tmux new-session -s cumino "
+      let cmd .= " -e \"tmux new-session -s cumino "
     endif
 
-    let a:cmd .= "'ghci'\" &"
-    call system(a:cmd)
+    let sandbox = GetSandboxActivationStringIfPresent()
+    let cmd .= "'".sandbox."ghci'\" &"
+    call system(cmd)
 
   endif
+endfun
+
+fun! GetSandboxActivationStringIfPresent()
+
+  if($HSENV != "")
+    return "source " . $HSENV . "/.hsenv_" . $HSENV_NAME . "/bin/activate && "
+  else
+    return ""
+  endif
+
 endfun
 
 fun! CuminoSessionExists()
