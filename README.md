@@ -19,6 +19,7 @@ Cumino is the vim way to prepare Haskell recipies:
 * Send to ghci your type, function and instances definitions
 * Test in insolation snippet of code sending visual selection to ghci
 * (Optionally) indent your code with stylish-haskell
+* Possibility to set a list of ghci flags inside your .vimrc (e.g, *-XOverloadedString*)
 * Test your code **environmentwise**: if an [Hsenv](https://github.com/Paczesiowa/hsenv)
   sandbox environment is activated, Cumino automatically starts
   the ghci associated with that environment.

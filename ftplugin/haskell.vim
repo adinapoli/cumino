@@ -36,6 +36,10 @@ if !exists("g:cumino_buffer_location")
   let g:cumino_buffer_location = substitute(system("echo $HOME"), "\n", "", "g") . "/.cumino.buff"
 endif
 
+if !exists("g:cumino_ghci_args")
+  let g:cumino_ghci_args = ""
+endif
+
 python << EOF
 import vim
 import os
@@ -137,7 +141,7 @@ fun! CuminoConnect()
     endif
 
     let sandbox = GetSandboxActivationStringIfPresent()
-    let cmd .= "'".sandbox."ghci'\" &"
+    let cmd .= "'".sandbox."ghci ". g:cumino_ghci_args ."'\" &"
     call system(cmd)
 
   endif
