@@ -109,7 +109,7 @@ EOF
 fun! CuminoConnect()
 
   " Allow nested tmux sessions.
-  call system("unset $TMUX")
+  let $TMUX=""
 
   if CuminoSessionExists()
     "Attach to an already running session
