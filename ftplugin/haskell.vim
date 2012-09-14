@@ -204,6 +204,6 @@ if has("stylish-haskell")
 endif
 
 "Kill cumino before exiting Vim
-autocmd VimLeavePre * call CuminoCloseSession()<RETURN>
+autocmd VimLeavePre * call CuminoCloseSession()
 
 " vim:sw=2
