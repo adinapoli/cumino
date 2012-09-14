@@ -40,6 +40,10 @@ if !exists("g:cumino_ghci_args")
   let g:cumino_ghci_args = ""
 endif
 
+if !exists("g:cumino_use_hsenv")
+  let g:cumino_use_hsenv = 1
+endif
+
 python << EOF
 import vim
 import os
@@ -149,8 +153,8 @@ endfun
 
 fun! GetSandboxActivationStringIfPresent()
 
-  if($HSENV != "")
-    return "source " . $HSENV . "/.hsenv_" . $HSENV_NAME . "/bin/activate && "
+  if($HSENV != "" && g:cumino_use_hsenv)
+    return "export GHC_PACKAGE_PATH=" . $GHC_PACKAGE_PATH . " && "
   else
     return ""
   endif
