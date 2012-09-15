@@ -218,10 +218,6 @@ map <LocalLeader>cb :call CuminoEvalBuffer()<RETURN>
 " those to avoid repeating the call for every line!
 map <LocalLeader>cv :<BS><BS><BS><BS><BS>call CuminoEvalVisual()<RETURN>
 
-if has("stylish-haskell")
-  vmap = !stylish-haskell<RETURN>
-endif
-
 "Kill cumino before exiting Vim
 autocmd VimLeavePre * call CuminoCloseSession()
 
