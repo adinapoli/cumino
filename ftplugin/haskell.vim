@@ -44,14 +44,15 @@ if !exists("g:cumino_use_hsenv")
   let g:cumino_use_hsenv = 1
 endif
 
+" Used to infer whether call :load or simply :r
+let g:cumino_module_loaded = {}
+
 python << EOF
 import vim
 import os
 import subprocess
 
 def write_to_buffer():
-  
-  
   cumino_buff = vim.eval("g:cumino_buffer_location") 
   selected_lines = vim.eval("g:selected_text")
   selected_lines = discard_function_declaration(selected_lines)
@@ -94,7 +95,6 @@ def line_starts_with(line, keyword):
   return keyword == line.split(" ")[0]
 
 def wrap_if_multiline(lines):
-  
   # Decide whether wrapping the line with :{ :} or not.
   # Some multilines, for example imports, don't require multiline
   # wrapping
@@ -103,10 +103,31 @@ def wrap_if_multiline(lines):
   return lines
 
 def cumino_eval_visual():
-  cumino_buff = vim.eval("g:cumino_buffer_location") 
   write_to_buffer()
+  send_buffer_to_tmux()
+
+def send_buffer_to_tmux():
+  cumino_buff = vim.eval("g:cumino_buffer_location")
   subprocess.call(["tmux", "load-buffer", cumino_buff ])
   subprocess.call(["tmux", "pasteb", "-t", "cumino"])
+
+def cumino_show_type_under_the_cursor():
+  function_name = vim.eval("@z")
+  write_to_buffer_raw(":t " + function_name)
+  send_buffer_to_tmux()
+
+def write_to_buffer_raw(content):
+  """
+  Same of write_buffer, except that
+  write @content without checking it.
+  """
+  cumino_buff = vim.eval("g:cumino_buffer_location") 
+  f = open(cumino_buff, "w")
+
+  f.write(content)
+  f.write(os.linesep)
+
+  f.close()
 
 def cumino_kill():
   subprocess.call(["tmux", "kill-session", "-t", "cumino"])
@@ -171,11 +192,18 @@ fun! CuminoSessionExists()
 endfun
 
 fun! CuminoEvalBuffer()
+
   let b:buffer_name = expand("%:p")
-  let b:use_cmd = ":load \"". b:buffer_name ."\""
+  let module_already_loaded = get(g:cumino_module_loaded, b:buffer_name)
+  if (!module_already_loaded)
+    let b:use_cmd = ":load \"". b:buffer_name ."\""
+  else
+    let b:use_cmd = ":r"
+  endif
   call system("echo \"". escape(b:use_cmd,"\"") ."\" > ". g:cumino_buffer_location)
   if CuminoSessionExists()
     call system("tmux load-buffer ". g:cumino_buffer_location ."; tmux pasteb -t cumino")
+    let g:cumino_module_loaded[expand("%:p")] = 1
   endif
 endfun
 
@@ -194,6 +222,13 @@ fun! CuminoEvalVisual()
   if CuminoSessionExists()
     let g:selected_text = s:GetVisualSelection()
     python cumino_eval_visual()
+  endif
+endfun
+
+fun! CuminoShowTypeUnderTheCursor()
+  if CuminoSessionExists()
+    normal! "zyw
+    python cumino_show_type_under_the_cursor()
   endif
 endfun
 
@@ -217,6 +252,9 @@ map <LocalLeader>cb :call CuminoEvalBuffer()<RETURN>
 " ":" Vim will fill the prompt with <','>, but we want to cancel
 " those to avoid repeating the call for every line!
 map <LocalLeader>cv :<BS><BS><BS><BS><BS>call CuminoEvalVisual()<RETURN>
+
+"Mnemonic: cumino (Show) Type
+map <LocalLeader>ct :call CuminoShowTypeUnderTheCursor()<RETURN>
 
 "Kill cumino before exiting Vim
 autocmd VimLeavePre * call CuminoCloseSession()
