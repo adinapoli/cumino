@@ -87,7 +87,10 @@ def append_let_if_function(lines):
 
   is_prefixable = lines[0].split(" ")[0] not in not_prefixable_keywords
   if is_prefixable:
+    # We must also ident every other line that follows
     lines[0] = "let " + lines[0]
+    for idx in range(1,len(lines)):
+      lines[idx] = "    " + lines[idx]
 
   return lines
 
@@ -223,7 +226,7 @@ function! s:GetVisualSelection()
   return lines
 endfunction
 
-fun! CuminoEvalVisual()
+fun! CuminoEvalVisual() range
   if CuminoSessionExists()
     let g:selected_text = s:GetVisualSelection()
     python cumino_eval_visual()
@@ -261,11 +264,7 @@ map <LocalLeader>cc :call CuminoConnect()<RETURN>
 map <LocalLeader>cb :call CuminoEvalBuffer()<RETURN>
 
 "Mnemonic: cumino (Eval) Visual (Selection)
-"This is an ugly hack to cancel the visual boundaries from
-"the ex prompt. By default, when in visual mode and you press
-" ":" Vim will fill the prompt with <','>, but we want to cancel
-" those to avoid repeating the call for every line!
-map <LocalLeader>cv :<BS><BS><BS><BS><BS>call CuminoEvalVisual()<RETURN>
+map <LocalLeader>cv :call CuminoEvalVisual()<RETURN>
 
 "Mnemonic: cumino (Show) Type
 map <LocalLeader>ct :call CuminoShowTypeUnderTheCursor()<RETURN>
