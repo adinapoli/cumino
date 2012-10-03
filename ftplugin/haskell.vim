@@ -116,6 +116,11 @@ def cumino_show_type_under_the_cursor():
   write_to_buffer_raw(":t " + function_name)
   send_buffer_to_tmux()
 
+def cumino_send_to_ghci():
+  expr = vim.eval("cmd")
+  write_to_buffer_raw(expr)
+  send_buffer_to_tmux()
+
 def write_to_buffer_raw(content):
   """
   Same of write_buffer, except that
@@ -232,6 +237,15 @@ fun! CuminoShowTypeUnderTheCursor()
   endif
 endfun
 
+fun! CuminoSendToGhci()
+  if CuminoSessionExists()
+    call inputsave()
+    let cmd = input('Expr?: ')
+    call inputrestore()
+    python cumino_send_to_ghci()
+  endif
+endfun
+
 fun! CuminoCloseSession()
   if CuminoSessionExists()
     if g:cumino_owner == getpid()
@@ -255,6 +269,9 @@ map <LocalLeader>cv :<BS><BS><BS><BS><BS>call CuminoEvalVisual()<RETURN>
 
 "Mnemonic: cumino (Show) Type
 map <LocalLeader>ct :call CuminoShowTypeUnderTheCursor()<RETURN>
+
+"Mnemonic: cumino Send
+map <LocalLeader>cs :call CuminoSendToGhci()<RETURN>
 
 "Kill cumino before exiting Vim
 autocmd VimLeavePre * call CuminoCloseSession()
