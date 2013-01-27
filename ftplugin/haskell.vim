@@ -28,8 +28,8 @@ if !has("python")
 endif
 
 " Default variables
-if !exists("g:cumino_default_terminal")
-  let g:cumino_default_terminal = "xterm"
+if !exists("g:cumino_swap_on_load")
+  let g:cumino_swap_on_load = 1
 endif
 
 if !exists("g:cumino_buffer_location")
@@ -138,66 +138,45 @@ def write_to_buffer_raw(content):
   f.close()
 
 def cumino_kill():
-  subprocess.call(["tmux", "kill-session", "-t", "cumino"])
+  subprocess.call(["tmux", "kill-window", "-t", "cumino"])
+
+def cumino_swap():
+  subprocess.call(["tmux", "swap-window", "-d", "-s", "2", "-t", "cumino"])
 
 EOF
 
 "Connect to repl
 fun! CuminoConnect()
 
-  " Allow nested tmux sessions.
-  let $TMUX=""
+  echo "Starting a new cumino session..."
 
-  if CuminoSessionExists()
-    "Attach to an already running session
-    echo "Connecting to an already running cumino session..."
+  let cmd = "tmux new-window -n cumino "
 
-    if (g:cumino_default_terminal == "urxvt")
-      call system(g:cumino_default_terminal ." -e -sh -c \"tmux attach-session -t cumino\" &")
-    else
-      call system(g:cumino_default_terminal ." -e \"tmux attach-session -t cumino\" &")
-    endif
+  let sandbox = GetSandboxActivationStringIfPresent()
+  let cmd .= "'".sandbox."ghci ". g:cumino_ghci_args ."'"
+  call system(cmd)
 
-    echo "Connected."
-
-  else
-
-    "Change the cumino owner to be this one
-    let g:cumino_owner = getpid()
-    echo "Starting a new cumino session..."
-    let cmd = g:cumino_default_terminal
-
-    if (g:cumino_default_terminal == "urxvt")
-      let cmd .= " -e sh -c \"tmux new-session -s cumino "
-    else
-      let cmd .= " -e \"tmux new-session -s cumino "
-    endif
-
-    let sandbox = GetSandboxActivationStringIfPresent()
-    let cmd .= "'".sandbox."ghci ". g:cumino_ghci_args ."'\" &"
-    call system(cmd)
-
+  if(g:cumino_swap_on_load)
+    python cumino_swap()
   endif
+
+  "Every time we reload a tmux window, modules must be
+  "reloaded.
+  let g:cumino_module_loaded[expand("%:p")] = 0
+  echo "Cumino session started."
+
 endfun
 
 fun! GetSandboxActivationStringIfPresent()
 
   if($HSENV != "" && g:cumino_use_hsenv)
-    return "export GHC_PACKAGE_PATH=" . $GHC_PACKAGE_PATH . " && "
+    return "export GHC_PACKAGE_PATH=" . $GHC_PACKAGE_PATH_REPLACEMENT . " && "
   else
     return ""
   endif
 
 endfun
 
-fun! CuminoSessionExists()
-  let w:sessions = system("tmux list-sessions 2>&1 | grep cumino")
-  if (w:sessions != "")
-      return 1
-  else
-    return 0
-  endif
-endfun
 
 fun! CuminoEvalBuffer()
 
@@ -209,10 +188,8 @@ fun! CuminoEvalBuffer()
     let b:use_cmd = ":r"
   endif
   call system("echo \"". escape(b:use_cmd,"\"") ."\" > ". g:cumino_buffer_location)
-  if CuminoSessionExists()
-    call system("tmux load-buffer ". g:cumino_buffer_location ."; tmux pasteb -t cumino")
-    let g:cumino_module_loaded[expand("%:p")] = 1
-  endif
+  call system("tmux load-buffer ". g:cumino_buffer_location ."; tmux pasteb -t cumino")
+  let g:cumino_module_loaded[expand("%:p")] = 1
 endfun
 
 function! s:NumSort(a, b)
@@ -227,34 +204,29 @@ function! s:GetVisualSelection()
 endfunction
 
 fun! CuminoEvalVisual() range
-  if CuminoSessionExists()
-    let g:selected_text = s:GetVisualSelection()
-    python cumino_eval_visual()
-  endif
+  let g:selected_text = s:GetVisualSelection()
+  python cumino_eval_visual()
 endfun
 
 fun! CuminoShowTypeUnderTheCursor()
-  if CuminoSessionExists()
-    normal! "zyw
-    python cumino_show_type_under_the_cursor()
-  endif
+  normal! "zyw
+  python cumino_show_type_under_the_cursor()
 endfun
 
 fun! CuminoSendToGhci()
-  if CuminoSessionExists()
-    call inputsave()
-    let cmd = input('Expr?: ')
-    call inputrestore()
-    python cumino_send_to_ghci()
-  endif
+  call inputsave()
+  let cmd = input('Expr?: ')
+  call inputrestore()
+  python cumino_send_to_ghci()
 endfun
 
 fun! CuminoCloseSession()
-  if CuminoSessionExists()
-    if g:cumino_owner == getpid()
-      python cumino_kill()
-    endif
-  endif
+    python cumino_kill()
+endfun
+
+fun! CuminoSwap()
+  " By default, swap the second window to be the cumino one.
+  python cumino_swap()
 endfun
 
 "Mnemonic: cumino Connect
@@ -271,6 +243,9 @@ map <LocalLeader>ct :call CuminoShowTypeUnderTheCursor()<RETURN>
 
 "Mnemonic: cumino Send
 map <LocalLeader>cs :call CuminoSendToGhci()<RETURN>
+
+"Mnemonic: cumino s(W)ap
+map <LocalLeader>cw :call CuminoSwap()<RETURN>
 
 "Kill cumino before exiting Vim
 autocmd VimLeavePre * call CuminoCloseSession()
