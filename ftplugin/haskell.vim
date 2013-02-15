@@ -170,7 +170,7 @@ endfun
 fun! GetSandboxActivationStringIfPresent()
 
   if($HSENV != "" && g:cumino_use_hsenv)
-    return "export GHC_PACKAGE_PATH=" . $GHC_PACKAGE_PATH_REPLACEMENT . " && "
+    return "export GHC_PACKAGE_PATH=" . $HSENV . "/.hsenv/ghc_pkg_db && "
   else
     return ""
   endif
