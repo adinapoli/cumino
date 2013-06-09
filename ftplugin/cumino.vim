@@ -18,7 +18,6 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
 "
-" Basic init {{{1
 
 if v:version < 700
     echohl WarningMsg
@@ -44,6 +43,9 @@ endif
 " See TODO
 if !exists("g:cumino_default_terminal")
   let g:cumino_default_terminal = "xterm"
+  if executable("urxvt")
+    let g:cumino_default_terminal = "urxvt"
+  endif
 endif
 
 if !exists("g:cumino_buffer_location")
@@ -159,8 +161,7 @@ def cumino_kill():
 EOF
 
 " Connect to repl
-" See TODO: <SID>
-fun! <SID>CuminoConnect()
+fun! s:CuminoConnect()
 
   " Allow nested tmux sessions.
   let $TMUX=""
@@ -216,8 +217,7 @@ fun! CuminoSessionExists()
   endif
 endfun
 
-" See TODO: <SID>
-fun! <SID>CuminoEvalBuffer()
+fun! s:CuminoEvalBuffer()
 
   let b:buffer_name = expand("%:p")
   let module_already_loaded = get(g:cumino_module_loaded, b:buffer_name)
@@ -244,24 +244,21 @@ function! s:GetVisualSelection()
   return lines
 endfunction
 
-" See TODO: <SID>
-fun! <SID>CuminoEvalVisual() range
+fun! s:CuminoEvalVisual() range
   if CuminoSessionExists()
     let g:selected_text = s:GetVisualSelection()
     python cumino_eval_visual()
   endif
 endfun
 
-" See TODO: <SID>
-fun! <SID>CuminoShowTypeUnderTheCursor()
+fun! s:CuminoShowTypeUnderTheCursor()
   if CuminoSessionExists()
     normal! "zyw
     python cumino_show_type_under_the_cursor()
   endif
 endfun
 
-" See TODO: <SID>
-fun! <SID>CuminoSendToGhci()
+fun! s:CuminoSendToGhci()
   if CuminoSessionExists()
     call inputsave()
     let cmd = input('Expr?: ')
@@ -270,7 +267,7 @@ fun! <SID>CuminoSendToGhci()
   endif
 endfun
 
-fun! CuminoCloseSession()
+fun! s:CuminoCloseSession()
   if CuminoSessionExists()
     if g:cumino_owner == getpid()
       python cumino_kill()
@@ -330,6 +327,6 @@ noremap <unique> <silent> <Plug>CuminoSendToGhci
 
 
 " Kill cumino before exiting Vim
-autocmd VimLeavePre * call CuminoCloseSession()
+autocmd VimLeavePre * call <SID>CuminoCloseSession()
 
 " vim:sw=2
