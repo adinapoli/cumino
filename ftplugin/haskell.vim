@@ -310,24 +310,18 @@ endif
 
 " Global (Mnemonic) Maps:
 "
-function! s:mapkeys() abort
-    call s:logdebugmessage('mapping keys')
-
-    noremap <unique> <Plug>CuminoConnect
-          \ :call <SID>CuminoConnect()<RETURN>
-    noremap <unique> <Plug>CuminoEvalBuffer
-          \ :call <SID>CuminoEvalBuffer()<RETURN>
-    noremap <unique> <Plug>CuminoEvalVisual
-          \ :call <SID>CuminoEvalVisual()<RETURN>
-    noremap <unique> <Plug>CuminoShowTypeUnderTheCursor
-          \ :call <SID>CuminoShowTypeUnderTheCursor()<RETURN>
-    noremap <unique> <Plug>CuminoSendToGhci
-          \ :call <SID>CuminoSendToGhci()<RETURN>
-endfunction
-
 " Override internal Mnemonics, e.g.
 " map <unique> <Leader>hcc Cumino#CuminoConnect()
-call s:mapkeys()
+noremap <unique> <Plug>CuminoConnect
+      \ :call <SID>CuminoConnect()<RETURN>
+noremap <unique> <Plug>CuminoEvalBuffer
+      \ :call <SID>CuminoEvalBuffer()<RETURN>
+noremap <unique> <Plug>CuminoEvalVisual
+      \ :call <SID>CuminoEvalVisual()<RETURN>
+noremap <unique> <Plug>CuminoShowTypeUnderTheCursor
+      \ :call <SID>CuminoShowTypeUnderTheCursor()<RETURN>
+noremap <unique> <Plug>CuminoSendToGhci
+      \ :call <SID>CuminoSendToGhci()<RETURN>
 
 
 " Kill cumino before exiting Vim
