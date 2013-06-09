@@ -29,6 +29,19 @@ Cumino is the vim way to prepare Haskell recipies:
 
 Like any other Pathogen bundle.
 
+# Customise
+In case some other plugin is using the same shortcuts Cumino uses, it's easy to
+bind Cumino functions to arbitrary keystrokes. The default keystrokes are
+defined at the end of the Cumino
+[source code](https://github.com/adinapoli/cumino/blob/master/ftplugin/haskell.vim#L260).
+Suppose you want to override the connect function, is as simple as:
+
+```
+map MyKeyBindingHere :call CuminoConnect()<RETURN>
+```
+
+Put this inside your ``.vimrc`` and you are in business.
+
 # Contribute
 
 Yes, please. You can open an issue or fork fix and pull, like usual.

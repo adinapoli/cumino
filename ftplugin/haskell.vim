@@ -28,10 +28,14 @@ if !has("python")
 endif
 
 " Default variables
+
+" This instruct Cumino to swap the spawned ghci window so that is
+" always the second one.
 if !exists("g:cumino_swap_on_load")
   let g:cumino_swap_on_load = 1
 endif
 
+" Where to store the buffer Cumino uses as intermediary to send commands to tmux.
 if !exists("g:cumino_buffer_location")
   let g:cumino_buffer_location = substitute(system("echo $HOME"), "\n", "", "g") . "/.cumino.buff"
 endif
