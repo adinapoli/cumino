@@ -159,7 +159,7 @@ def cumino_kill():
 EOF
 
 "Connect to repl
-fun! CuminoConnect()
+fun! <SID>CuminoConnect()
 
   " Allow nested tmux sessions.
   let $TMUX=""
