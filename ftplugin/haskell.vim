@@ -312,15 +312,15 @@ endif
 "
 " Override internal Mnemonics, e.g.
 " map <unique> <Leader>hcc Cumino#CuminoConnect()
-noremap <unique> <Plug>CuminoConnect
+noremap <unique> <silent> <Plug>CuminoConnect
       \ :call <SID>CuminoConnect()<RETURN>
-noremap <unique> <Plug>CuminoEvalBuffer
+noremap <unique> <silent> <Plug>CuminoEvalBuffer
       \ :call <SID>CuminoEvalBuffer()<RETURN>
-noremap <unique> <Plug>CuminoEvalVisual
+noremap <unique> <silent> <Plug>CuminoEvalVisual
       \ :call <SID>CuminoEvalVisual()<RETURN>
-noremap <unique> <Plug>CuminoShowTypeUnderTheCursor
+noremap <unique> <silent> <Plug>CuminoShowTypeUnderTheCursor
       \ :call <SID>CuminoShowTypeUnderTheCursor()<RETURN>
-noremap <unique> <Plug>CuminoSendToGhci
+noremap <unique> <silent> <Plug>CuminoSendToGhci
       \ :call <SID>CuminoSendToGhci()<RETURN>
 
 
