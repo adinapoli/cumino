@@ -1,5 +1,5 @@
 
-*cimino.txt*    Hooks ViM up to GHCi by Tmux
+*cumino.txt*    Hooks ViM up to GHCi by Tmux
 
 Author:         Alfredo Di Napoli <?@?.com>
 Licence:        ? licence, see |license|
