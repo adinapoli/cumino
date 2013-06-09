@@ -105,6 +105,15 @@ The following mappings are valid in the Cumino window:
 ==============================================================================
 5. Configuration                                        *cumino-configuration*
 
+Cumino has the following variables that can be tweaked in your .vimrc
+
+    - let g:cumino_default_terminal (default: "xterm")
+      Choose your favorite terminal emulator
+    - let g:cumino_buffer_location (default: $HOME/.cumino.buff)
+      Cumino needs a buffer as intermediate between Vim and tmux. This is its path.
+    - let g:cumino_ghci_args (default: Empty)
+      Set here your ghci arguments. (e.g. -XOverloadedStrings )
+
 ==============================================================================
 6. Troubleshooting & Known issues                              *cumino-issues*
 
