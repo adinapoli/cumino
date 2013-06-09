@@ -215,7 +215,7 @@ fun! CuminoSessionExists()
   endif
 endfun
 
-fun! CuminoEvalBuffer()
+fun! <SID>CuminoEvalBuffer()
 
   let b:buffer_name = expand("%:p")
   let module_already_loaded = get(g:cumino_module_loaded, b:buffer_name)
@@ -242,21 +242,21 @@ function! s:GetVisualSelection()
   return lines
 endfunction
 
-fun! CuminoEvalVisual() range
+fun! <SID>CuminoEvalVisual() range
   if CuminoSessionExists()
     let g:selected_text = s:GetVisualSelection()
     python cumino_eval_visual()
   endif
 endfun
 
-fun! CuminoShowTypeUnderTheCursor()
+fun! <SID>CuminoShowTypeUnderTheCursor()
   if CuminoSessionExists()
     normal! "zyw
     python cumino_show_type_under_the_cursor()
   endif
 endfun
 
-fun! CuminoSendToGhci()
+fun! <SID>CuminoSendToGhci()
   if CuminoSessionExists()
     call inputsave()
     let cmd = input('Expr?: ')
