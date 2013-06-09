@@ -158,7 +158,8 @@ def cumino_kill():
 
 EOF
 
-"Connect to repl
+" Connect to repl
+" See TODO: <SID>
 fun! <SID>CuminoConnect()
 
   " Allow nested tmux sessions.
@@ -215,6 +216,7 @@ fun! CuminoSessionExists()
   endif
 endfun
 
+" See TODO: <SID>
 fun! <SID>CuminoEvalBuffer()
 
   let b:buffer_name = expand("%:p")
@@ -242,6 +244,7 @@ function! s:GetVisualSelection()
   return lines
 endfunction
 
+" See TODO: <SID>
 fun! <SID>CuminoEvalVisual() range
   if CuminoSessionExists()
     let g:selected_text = s:GetVisualSelection()
@@ -249,6 +252,7 @@ fun! <SID>CuminoEvalVisual() range
   endif
 endfun
 
+" See TODO: <SID>
 fun! <SID>CuminoShowTypeUnderTheCursor()
   if CuminoSessionExists()
     normal! "zyw
@@ -256,6 +260,7 @@ fun! <SID>CuminoShowTypeUnderTheCursor()
   endif
 endfun
 
+" See TODO: <SID>
 fun! <SID>CuminoSendToGhci()
   if CuminoSessionExists()
     call inputsave()
@@ -310,7 +315,7 @@ endif
 
 " Global (Mnemonic) Maps:
 "
-" Override internal Mnemonics, e.g.
+" TODO: Override internal Mnemonics, e.g.
 " map <unique> <Leader>hcc Cumino#CuminoConnect()
 noremap <unique> <silent> <Plug>CuminoConnect
       \ :call <SID>CuminoConnect()<RETURN>

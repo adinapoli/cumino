@@ -130,6 +130,12 @@ Cumino was tested against *gnome-terminal*, *xterm*, *urxvt* and *mlterm*.
 8. Todo                                                          *cumino-todo*
 
   - Auto find best terminal emulator, check if speificed one is vaild
+  - Convert to autoload plugin, swap <SID>CuminoXXX() function calls
+    to cumino#CuminoXXX() function calls so that they are publically
+    mappable. Ensure any other internal functions are <SID> only so
+    that no other plugin steps on our toes and calls our functions.
+  - Rename plugin from haskell.vim to cumino.vim to allow for autoloading
+    and cumino#CuminoXXX function namespacing.
 
 ==============================================================================
 9. Credits                                                   *cumino-credits*
