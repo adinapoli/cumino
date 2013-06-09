@@ -18,6 +18,15 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
 "
+" Basic init {{{1
+
+if v:version < 700
+    echohl WarningMsg
+    echomsg 'Cumino: Vim version is too old, Cumino requires at least 7.0'
+    echohl None
+    finish
+endif
+
 if exists("b:did_ftplugin")
   finish
 endif
