@@ -27,13 +27,19 @@ if !has("python")
   finish
 endif
 
+if !executable("tmux")
+  finish
+endif
+
 " Default variables
+" See TODO
 if !exists("g:cumino_default_terminal")
   let g:cumino_default_terminal = "xterm"
 endif
 
 if !exists("g:cumino_buffer_location")
-  let g:cumino_buffer_location = substitute(system("echo $HOME"), "\n", "", "g") . "/.cumino.buff"
+  let g:cumino_buffer_location =
+        \ substitute(system("echo $HOME"), "\n", "", "g") . "/.cumino.buff"
 endif
 
 if !exists("g:cumino_ghci_args")
@@ -47,13 +53,14 @@ endif
 " Used to infer whether call :load or simply :r
 let g:cumino_module_loaded = {}
 
+
 python << EOF
 import vim
 import os
 import subprocess
 
 def write_to_buffer():
-  cumino_buff = vim.eval("g:cumino_buffer_location") 
+  cumino_buff = vim.eval("g:cumino_buffer_location")
   selected_lines = vim.eval("g:selected_text")
   selected_lines = discard_function_declaration(selected_lines)
   selected_lines = append_let_if_function(selected_lines)
@@ -129,7 +136,7 @@ def write_to_buffer_raw(content):
   Same of write_buffer, except that
   write @content without checking it.
   """
-  cumino_buff = vim.eval("g:cumino_buffer_location") 
+  cumino_buff = vim.eval("g:cumino_buffer_location")
   f = open(cumino_buff, "w")
 
   f.write(content)
@@ -257,22 +264,64 @@ fun! CuminoCloseSession()
   endif
 endfun
 
-"Mnemonic: cumino Connect
-map <LocalLeader>cc :call CuminoConnect()<RETURN>
 
-"Mnemonic: cumino (Eval) Buffer
-map <LocalLeader>cb :call CuminoEvalBuffer()<RETURN>
+" Public Interface:
+"
 
-"Mnemonic: cumino (Eval) Visual (Selection)
-map <LocalLeader>cv :call CuminoEvalVisual()<RETURN>
+" Mnemonic: cumino Connect
+"
+if !hasmapto('<Plug>CuminoConnect')
+  map <unique> <LocalLeader>cc <Plug>CuminoConnect
+endif
 
-"Mnemonic: cumino (Show) Type
-map <LocalLeader>ct :call CuminoShowTypeUnderTheCursor()<RETURN>
+" Mnemonic: cumino (Eval) Buffer
+"
+if !hasmapto('<Plug>CuminoEvalBuffer')
+  map <unique> <LocalLeader>cb <Plug>CuminoEvalBuffer
+endif
 
-"Mnemonic: cumino Send
-map <LocalLeader>cs :call CuminoSendToGhci()<RETURN>
+" Mnemonic: cumino (Eval) Visual (Selection)
+"
+if !hasmapto('<Plug>CuminoEvalVisual')
+  map <unique> <LocalLeader>cv <Plug>CuminoEvalVisual
+endif
 
-"Kill cumino before exiting Vim
+" Mnemonic: cumino (Show) Type
+"
+if !hasmapto('<Plug>CuminoShowTypeUnderTheCursor')
+  map <unique> <LocalLeader>ct <Plug>CuminoShowTypeUnderTheCursor
+endif
+
+" Mnemonic: cumino Send
+"
+if !hasmapto('<Plug>CuminoSendToGhci')
+  map <unique> <LocalLeader>cs <Plug>CuminoSendToGhci
+endif
+
+
+" Global (Mnemonic) Maps:
+"
+function! s:mapkeys() abort
+    call s:logdebugmessage('mapping keys')
+
+    noremap <unique> <Plug>CuminoConnect
+          \ :call <SID>CuminoConnect()<RETURN>
+    noremap <unique> <Plug>CuminoEvalBuffer
+          \ :call <SID>CuminoEvalBuffer()<RETURN>
+    noremap <unique> <Plug>CuminoEvalVisual
+          \ :call <SID>CuminoEvalVisual()<RETURN>
+    noremap <unique> <Plug>CuminoShowTypeUnderTheCursor
+          \ :call <SID>CuminoShowTypeUnderTheCursor()<RETURN>
+    noremap <unique> <Plug>CuminoSendToGhci
+          \ :call <SID>CuminoSendToGhci()<RETURN>
+endfunction
+
+" Override internal Mnemonics, e.g.
+" map <unique> <Leader>hcc Cumino#CuminoConnect()
+call s:mapkeys()
+
+
+" Kill cumino before exiting Vim
 autocmd VimLeavePre * call CuminoCloseSession()
 
 " vim:sw=2
