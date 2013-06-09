@@ -274,6 +274,17 @@ fun! CuminoCloseSession()
 endfun
 
 
+" s:LogDebugMessage() {{{2
+function! s:LogDebugMessage(msg) abort
+    if s:debug
+        let s:debug_file = 'cuminodebug.log'
+        execute 'redir >> ' . s:debug_file
+        silent echon strftime('%H:%M:%S') . ': ' . a:msg . "\n"
+        redir END
+    endif
+endfunction
+
+
 " Public Interface:
 "
 
