@@ -1,0 +1,159 @@
+
+*cumino.txt*    Hooks ViM up to GHCi by Tmux
+
+Author:         Alfredo Di Napoli <?@?.com>
+Licence:        ? licence, see |license|
+Homepage:       https://github.com/adinapoli/cumino
+Version:        ?.?
+
+==============================================================================
+Contents                                            *cumino* *cumino-contents*
+
+         1. Intro ........................... |cumino-intro|
+              Supported features ............ |cumino-features|
+         2. Requirements .................... |cumino-requirements|
+         3. Installation .................... |cumino-installation|
+         4. Usage ........................... |cumino-usage|
+              Commands ...................... |cumino-commands|
+              Key mappings .................. |cumino-keys|
+         5. Configuration ................... |cumino-configuration|
+         6. Troubleshooting & Known issues .. |cumino-issues|
+         7. History ......................... |cumino-history|
+         8. Todo ............................ |cumino-todo|
+         9. Credits ......................... |cumino-credits|
+
+==============================================================================
+1. Intro                                                        *cumino-intro*
+
+Cumino is a plugin for Haskell source code files. It provides a method to
+prepare Haskell recipies by loading your source into GHCi by way of Tmux.
+
+Cumino is the vim way to prepare Haskell recipies:
+
+* See the [website](http://adinapoli.github.com/cumino)
+* Read the [Wiki](https://github.com/adinapoli/cumino/wiki/Getting-Started) to get started
+
+# Prerequisites
+
+* Vim with Python support enabled
+* Tmux >= 1.5
+* A terminal emulator
+
+------------------------------------------------------------------------------
+SUPPORTED FEATURES                                           *cumino-features*
+
+The following features are supported by Cumino:
+
+  - Send to ghci your type, function and instances definitions
+  - Type your function invokation in Vim an watch them be evaluated in Ghci
+  - Test in insolation snippet of code sending visual selection to ghci
+  - Show the type of the function under the cursor
+  - Possibility to set a list of ghci flags inside your .vimrc (e.g, *-XOverloadedString*)
+  - Test your code **environmentwise**:
+     if an [Hsenv](https://github.com/Paczesiowa/hsenv)
+     sandbox environment is activated, Cumino automatically starts
+     the ghci associated with that environment.
+
+==============================================================================
+2. Requirements                                          *cumino-requirements*
+
+The following requirements have to be met in order to be able to use Cumino:
+
+
+  - Vim with Python support enabled
+  - Tmux >= 1.5
+  - A terminal emulator
+
+==============================================================================
+3. Installation                                          *cumino-installation*
+
+Like any other Pathogen bundle.
+
+==============================================================================
+4. Usage                                                        *cumino-usage*
+
+There are essentially two ways to use Cumino:
+
+   1. First way
+   2. Another ways
+
+------------------------------------------------------------------------------
+COMMANDS                                                     *cumino-commands*
+
+:CuminoConnect                                    :CuminoConnect
+    Mnemonic: cumino Connect
+:CuminoEvalBuffer                                 :CuminoEvalBuffer
+    Mnemonic: cumino (Eval) Buffer
+:CuminoEvalVisual                                 :CuminoEvalVisual
+    Mnemonic: cumino (Eval) Visual (Selection)
+:CuminoShowTypeUnderTheCursor                     :CuminoShowTypeUnderTheCursor
+    Mnemonic: cumino (Show) Type
+:CuminoSendToGhci                                 :CuminoSendToGhci
+    Mnemonic: cumino Send
+
+------------------------------------------------------------------------------
+KEY MAPPINGS                                                     *cumino-keys*
+
+The following mappings are valid in the Cumino window:
+
+<localleader>cc           Creates a new Cumino session or attaches to an existing one.
+<localleader>cb           Load the file inside the buffer in ghci
+<localleader>cv           Send the selected text to ghci
+<localleader>ct           Sow the type of the function under the cursor in Ghci
+<localleader>cs           Send an expression to ghci (e.g. println "hello")
+
+==============================================================================
+5. Configuration                                        *cumino-configuration*
+
+Cumino has the following variables that can be tweaked in your .vimrc
+
+    - let g:cumino_default_terminal (default: "xterm")
+      Choose your favorite terminal emulator
+    - let g:cumino_buffer_location (default: $HOME/.cumino.buff)
+      Cumino needs a buffer as intermediate between Vim and tmux. This is its path.
+    - let g:cumino_ghci_args (default: Empty)
+      Set here your ghci arguments. (e.g. -XOverloadedStrings )
+
+You may remap any of the various key mappings by placing something like,
+
+    - map <unique> <LocalLeader>dc <Plug>CuminoConnect
+
+into your ~/.vimrc file.
+
+==============================================================================
+6. Troubleshooting & Known issues                              *cumino-issues*
+
+Cumino was tested against *gnome-terminal*, *xterm*, *urxvt* and *mlterm*.
+
+==============================================================================
+7. History                                                    *cumino-history*
+
+?.? (2013-??-??)
+    - New documentation
+    - Support for custom key mappings
+    - Ensure key mappings are unique
+
+==============================================================================
+8. Todo                                                          *cumino-todo*
+
+  - Auto find best terminal emulator, check if speificed one is vaild
+  - Convert plugin to autoload type and rename haskell.vim to cumino.vim
+    setup haskell detection properly based on FileType and finally splice
+    out inline python code into autoload/lib/cumino.py. We should only
+    load python when we really need to!
+  - Future? Support other file formats, restructure a bit.. Autoloading
+    will be a good start.
+
+==============================================================================
+9. Credits                                                   *cumino-credits*
+
+Cumino was written by Alfredo Di Napoli.
+
+Contribute, Yes, please.
+You can open an issue or fork fix and pull, like usual.
+
+Thanks to the following people for code contributions, feature suggestions etc:
+   - Edward O'Callaghan.
+
+==============================================================================
+ vim: tw=78 ts=8 sw=4 sts=4 et ft=help
