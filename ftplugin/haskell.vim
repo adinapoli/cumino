@@ -312,8 +312,6 @@ endif
 
 " Global (Mnemonic) Maps:
 "
-" TODO: Override internal Mnemonics, e.g.
-" map <unique> <Leader>hcc Cumino#CuminoConnect()
 noremap <unique> <silent> <Plug>CuminoConnect
       \ :call <SID>CuminoConnect()<RETURN>
 noremap <unique> <silent> <Plug>CuminoEvalBuffer
