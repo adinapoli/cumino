@@ -18,6 +18,14 @@
 " OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 " SOFTWARE.
 "
+
+if v:version < 700
+    echohl WarningMsg
+    echomsg 'Cumino: Vim version is too old, Cumino requires at least 7.0'
+    echohl None
+    finish
+endif
+
 if exists("b:did_ftplugin")
   finish
 endif
@@ -27,13 +35,22 @@ if !has("python")
   finish
 endif
 
+if !executable("tmux")
+  finish
+endif
+
 " Default variables
+" See TODO
 if !exists("g:cumino_default_terminal")
   let g:cumino_default_terminal = "xterm"
+  if executable("urxvt")
+    let g:cumino_default_terminal = "urxvt"
+  endif
 endif
 
 if !exists("g:cumino_buffer_location")
-  let g:cumino_buffer_location = substitute(system("echo $HOME"), "\n", "", "g") . "/.cumino.buff"
+  let g:cumino_buffer_location =
+        \ substitute(system("echo $HOME"), "\n", "", "g") . "/.cumino.buff"
 endif
 
 if !exists("g:cumino_ghci_args")
@@ -47,13 +64,14 @@ endif
 " Used to infer whether call :load or simply :r
 let g:cumino_module_loaded = {}
 
+
 python << EOF
 import vim
 import os
 import subprocess
 
 def write_to_buffer():
-  cumino_buff = vim.eval("g:cumino_buffer_location") 
+  cumino_buff = vim.eval("g:cumino_buffer_location")
   selected_lines = vim.eval("g:selected_text")
   selected_lines = discard_function_declaration(selected_lines)
   selected_lines = append_let_if_function(selected_lines)
@@ -129,7 +147,7 @@ def write_to_buffer_raw(content):
   Same of write_buffer, except that
   write @content without checking it.
   """
-  cumino_buff = vim.eval("g:cumino_buffer_location") 
+  cumino_buff = vim.eval("g:cumino_buffer_location")
   f = open(cumino_buff, "w")
 
   f.write(content)
@@ -142,8 +160,8 @@ def cumino_kill():
 
 EOF
 
-"Connect to repl
-fun! CuminoConnect()
+" Connect to repl
+fun! s:CuminoConnect()
 
   " Allow nested tmux sessions.
   let $TMUX=""
@@ -199,7 +217,7 @@ fun! CuminoSessionExists()
   endif
 endfun
 
-fun! CuminoEvalBuffer()
+fun! s:CuminoEvalBuffer()
 
   let b:buffer_name = expand("%:p")
   let module_already_loaded = get(g:cumino_module_loaded, b:buffer_name)
@@ -226,21 +244,21 @@ function! s:GetVisualSelection()
   return lines
 endfunction
 
-fun! CuminoEvalVisual() range
+fun! s:CuminoEvalVisual() range
   if CuminoSessionExists()
     let g:selected_text = s:GetVisualSelection()
     python cumino_eval_visual()
   endif
 endfun
 
-fun! CuminoShowTypeUnderTheCursor()
+fun! s:CuminoShowTypeUnderTheCursor()
   if CuminoSessionExists()
     normal! "zyw
     python cumino_show_type_under_the_cursor()
   endif
 endfun
 
-fun! CuminoSendToGhci()
+fun! s:CuminoSendToGhci()
   if CuminoSessionExists()
     call inputsave()
     let cmd = input('Expr?: ')
@@ -249,7 +267,7 @@ fun! CuminoSendToGhci()
   endif
 endfun
 
-fun! CuminoCloseSession()
+fun! s:CuminoCloseSession()
   if CuminoSessionExists()
     if g:cumino_owner == getpid()
       python cumino_kill()
@@ -257,22 +275,56 @@ fun! CuminoCloseSession()
   endif
 endfun
 
-"Mnemonic: cumino Connect
-map <LocalLeader>cc :call CuminoConnect()<RETURN>
 
-"Mnemonic: cumino (Eval) Buffer
-map <LocalLeader>cb :call CuminoEvalBuffer()<RETURN>
+" Public Interface:
+"
 
-"Mnemonic: cumino (Eval) Visual (Selection)
-map <LocalLeader>cv :call CuminoEvalVisual()<RETURN>
+" Mnemonic: cumino Connect
+"
+if !hasmapto('<Plug>CuminoConnect')
+  map <unique> <LocalLeader>cc <Plug>CuminoConnect
+endif
 
-"Mnemonic: cumino (Show) Type
-map <LocalLeader>ct :call CuminoShowTypeUnderTheCursor()<RETURN>
+" Mnemonic: cumino (Eval) Buffer
+"
+if !hasmapto('<Plug>CuminoEvalBuffer')
+  map <unique> <LocalLeader>cb <Plug>CuminoEvalBuffer
+endif
 
-"Mnemonic: cumino Send
-map <LocalLeader>cs :call CuminoSendToGhci()<RETURN>
+" Mnemonic: cumino (Eval) Visual (Selection)
+"
+if !hasmapto('<Plug>CuminoEvalVisual')
+  map <unique> <LocalLeader>cv <Plug>CuminoEvalVisual
+endif
 
-"Kill cumino before exiting Vim
-autocmd VimLeavePre * call CuminoCloseSession()
+" Mnemonic: cumino (Show) Type
+"
+if !hasmapto('<Plug>CuminoShowTypeUnderTheCursor')
+  map <unique> <LocalLeader>ct <Plug>CuminoShowTypeUnderTheCursor
+endif
+
+" Mnemonic: cumino Send
+"
+if !hasmapto('<Plug>CuminoSendToGhci')
+  map <unique> <LocalLeader>cs <Plug>CuminoSendToGhci
+endif
+
+
+" Global (Mnemonic) Maps:
+"
+noremap <unique> <silent> <Plug>CuminoConnect
+      \ :call <SID>CuminoConnect()<RETURN>
+noremap <unique> <silent> <Plug>CuminoEvalBuffer
+      \ :call <SID>CuminoEvalBuffer()<RETURN>
+noremap <unique> <silent> <Plug>CuminoEvalVisual
+      \ :call <SID>CuminoEvalVisual()<RETURN>
+noremap <unique> <silent> <Plug>CuminoShowTypeUnderTheCursor
+      \ :call <SID>CuminoShowTypeUnderTheCursor()<RETURN>
+noremap <unique> <silent> <Plug>CuminoSendToGhci
+      \ :call <SID>CuminoSendToGhci()<RETURN>
+
+
+" Kill cumino before exiting Vim
+autocmd VimLeavePre * call <SID>CuminoCloseSession()
 
 " vim:sw=2
